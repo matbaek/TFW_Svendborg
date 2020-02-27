@@ -2,6 +2,7 @@ package dk.offlines.tfwsvendborg
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
@@ -26,7 +27,10 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, ProfileActivity::class.java)
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "Error wrong username or password", Toast.LENGTH_LONG).show()
+                val toast = Toast.makeText(applicationContext, "Error wrong username or password", Toast.LENGTH_LONG)
+                toast.setGravity(Gravity.TOP,0,450)
+                toast.show()
+
             }
 
         }

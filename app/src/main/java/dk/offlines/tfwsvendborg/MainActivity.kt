@@ -1,13 +1,16 @@
 package dk.offlines.tfwsvendborg
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import dk.offlines.tfwsvendborg.data.UserRepository
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -18,20 +21,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-
         mainButtonLogin.setOnClickListener {
-            var userName = username.text.toString()
+            var username = username.text.toString()
             var password = password.text.toString()
-
-            if(userName == "Test" && password == "Test") {
+            Log.i("TestUser", "1")
+            val dataRepository = UserRepository(applicationContext)
+            dataRepository.login(username, password)
+            val userdata = dataRepository.userData
+            Log.i("TestUser", "2")
+            if(!userdata.equals(null)){
                 val intent = Intent(this, ProfileActivity::class.java)
                 startActivity(intent)
-            } else {
-                val toast = Toast.makeText(applicationContext, "Error wrong username or password", Toast.LENGTH_LONG)
-                toast.setGravity(Gravity.TOP,0,450)
-                toast.show()
-
             }
+
 
         }
         mainButtonRegisterNewUser.setOnClickListener {

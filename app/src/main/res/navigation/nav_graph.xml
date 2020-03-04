@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment"
+    tools:ignore="UnusedNavigation">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="dk.offlines.tfwsvendborg.ui.login.LoginFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/login_fragment"/>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="dk.offlines.tfwsvendborg.ui.register.RegisterFragment"
+        android:label="RegisterFragment"
+        tools:layout="@layout/register_fragment" />
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="dk.offlines.tfwsvendborg.ui.main.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/main_fragment" />
+</navigation>

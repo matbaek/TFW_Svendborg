@@ -6,15 +6,15 @@ import com.squareup.moshi.Json
 
 @Entity(tableName = "users")
 data class User (
+    @Json(name = "username") var username: String,
+    @Json(name = "password") var password: String,
+    @Json(name = "firstname") var firstname: String,
+    @Json(name = "lastname") var lastname: String,
+    @Json(name = "address") var address: String,
+    @Json(name = "birthDate" )var birthDate: String,
+    @Json(name = "phone_Nr") var phone_Nr: Int,
+    @Json(name = "email") var email: String
+) {
     @PrimaryKey (autoGenerate = true)
-    @Json(name = "id")val id: Int,
-    @Json(name = "username") val username: String,
-    @Json(name = "password") val password: String,
-    @Json(name = "firstname") val firstname: String,
-    @Json(name = "lastname") val lastname: String,
-    @Json(name = "address") val address: String,
-    @Json(name = "birthDate" )val birthDate: String,
-    @Json(name = "phone_Nr") val phone_Nr: Int,
-    @Json(name = "email") val email: String
-
-)
+    @Json(name = "id") var id: Int = 0
+}

@@ -21,4 +21,8 @@
         android:name="dk.offlines.tfwsvendborg.ui.main.MainFragment"
         android:label="MainFragment"
         tools:layout="@layout/main_fragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="dk.offlines.tfwsvendborg.ui.main.ProfileFragment"
+        android:label="@layout/profile_fragment" />
 </navigation>

@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import dk.offlines.tfwsvendborg.R
 
-class MainFragment: Fragment() {
+class ProfileFragment: Fragment() {
     private lateinit var navController: NavController
 
     override fun onCreateView(
@@ -23,7 +23,8 @@ class MainFragment: Fragment() {
     ): View? {
 
 
-        return inflater.inflate(R.layout.main_fragment, container, false)
+
+        return inflater.inflate(R.layout.profile_fragment, container, false)
 
 
     }

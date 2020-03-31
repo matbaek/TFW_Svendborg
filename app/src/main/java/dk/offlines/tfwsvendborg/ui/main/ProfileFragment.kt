@@ -14,18 +14,12 @@ import androidx.navigation.Navigation
 import dk.offlines.tfwsvendborg.R
 
 class ProfileFragment: Fragment() {
-    private lateinit var navController: NavController
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-
-
         return inflater.inflate(R.layout.profile_fragment, container, false)
-
-
     }
 }

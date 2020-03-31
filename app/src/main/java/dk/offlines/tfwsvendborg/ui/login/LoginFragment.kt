@@ -2,6 +2,7 @@
 
 package dk.offlines.tfwsvendborg.ui.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,6 +17,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import dk.offlines.tfwsvendborg.LoginActivity
+import dk.offlines.tfwsvendborg.MainActivity
 import dk.offlines.tfwsvendborg.R
 import kotlinx.android.synthetic.main.login_fragment.*
 
@@ -47,7 +50,11 @@ class LoginFragment: Fragment() {
                 toastError.setGravity(Gravity.TOP, 0, 250)
                 toastError.show()
             } else {
-                navController.navigate(R.id.mainFragment)
+                //navController.navigate(R.id.mainFragment)
+                val intent = Intent (activity, MainActivity::class.java)
+                this.startActivity(intent)
+
+                activity?.finish()
             }
         })
 

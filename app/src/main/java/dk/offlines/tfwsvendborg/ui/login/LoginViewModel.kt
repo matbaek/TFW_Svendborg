@@ -2,6 +2,7 @@ package dk.offlines.tfwsvendborg.ui.login
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import dk.offlines.tfwsvendborg.data.User
 import dk.offlines.tfwsvendborg.data.UserRepository
 
 class LoginViewModel(app: Application): AndroidViewModel(app) {

@@ -9,6 +9,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import dk.offlines.tfwsvendborg.ui.main.MainFragment
 import dk.offlines.tfwsvendborg.ui.main.ProfileFragment
+import dk.offlines.tfwsvendborg.ui.warrMan.WarrManFragment
+import kotlinx.android.synthetic.main.login_fragment.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var drawer: DrawerLayout
@@ -45,8 +47,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_profile -> supportFragmentManager.beginTransaction().replace(R.id.fragment_container, ProfileFragment()).commit()
+            R.id.nav_warr_man -> supportFragmentManager.beginTransaction().replace(R.id.fragment_container, WarrManFragment()).commit()
         }
         drawer.closeDrawer(GravityCompat.START)
         return true
     }
+
 }

@@ -9,7 +9,11 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
     private val dataRepository = UserRepository(app)
     val userData = dataRepository.userData
 
-    fun login(username: String, password: String) {
-        dataRepository.login(username, password)
+    fun saveUser(user: User) {
+        dataRepository.saveUser(user)
     }
+
+//    fun login(username: String, password: String) {
+//        dataRepository.login(username, password)
+//    }
 }

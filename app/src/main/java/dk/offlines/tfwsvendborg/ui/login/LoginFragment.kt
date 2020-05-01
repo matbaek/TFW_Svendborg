@@ -1,31 +1,33 @@
-@file:Suppress("DEPRECATION")
-
 package dk.offlines.tfwsvendborg.ui.login
 
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-import android.widget.TextView
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import dk.offlines.tfwsvendborg.LoginActivity
+import com.google.gson.JsonParser
 import dk.offlines.tfwsvendborg.MainActivity
 import dk.offlines.tfwsvendborg.R
-import kotlinx.android.synthetic.main.login_fragment.*
+import dk.offlines.tfwsvendborg.api.ApiClient
+import dk.offlines.tfwsvendborg.api.ApiInterface
+import dk.offlines.tfwsvendborg.api.ApiResponseUser
+import dk.offlines.tfwsvendborg.data.User
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class LoginFragment: Fragment() {
-    private lateinit var navController: NavController
 
-    private lateinit var viewModel: LoginViewModel
+@Suppress("DEPRECATION")
+class LoginFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,36 +39,61 @@ class LoginFragment: Fragment() {
         }
         setHasOptionsMenu(true)
 
-        val view =  inflater.inflate(R.layout.login_fragment, container, false)
-        val mainButtonLogin = view.findViewById<Button>(R.id.mainButtonLogin)
-        val mainButtonRegister = view.findViewById<TextView>(R.id.mainButtonRegisterNewUser)
+        val view = inflater.inflate(R.layout.login_fragment, container, false)
+        val apiInterface = ApiClient().getClient().create(ApiInterface::class.java)
+        val viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+        val main_button: Button = view.findViewById(R.id.mainButtonLogin)
 
-        navController = Navigation.findNavController(requireActivity(), R.id.nav_host)
+        main_button.setOnClickListener {
+            val username: EditText = view.findViewById(R.id.username)
+            val password: EditText = view.findViewById(R.id.password)
 
-        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
-        viewModel.userData.observe(viewLifecycleOwner, Observer {
-            if (it == null) {
-                val toastError = Toast.makeText(context, "Error wrong username or password!", Toast.LENGTH_SHORT)
-                toastError.setGravity(Gravity.TOP, 0, 250)
-                toastError.show()
-            } else {
-                //navController.navigate(R.id.mainFragment)
-                val intent = Intent (activity, MainActivity::class.java)
-                this.startActivity(intent)
+            // Hide keyboard - https://stackoverflow.com/questions/3400028/close-virtual-keyboard-on-button-press
+            val imm = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
 
-                activity?.finish()
-            }
-        })
+            val call: Call<ApiResponseUser> = apiInterface.login(username.text.toString(), password.text.toString())
+            call.enqueue(object: Callback<ApiResponseUser> {
+                @Override
+                override fun onResponse(
+                    call: Call<ApiResponseUser>,
+                    response: Response<ApiResponseUser>
+                ) {
+                    var message: String?
 
-        mainButtonLogin.setOnClickListener {
-            val username = username.text.toString()
-            val password = password.text.toString()
+                    if(response.isSuccessful) {
+                        val apiResponseUser: ApiResponseUser? = response.body()
+                        message = apiResponseUser?.message
+                        var user: User = apiResponseUser!!.user
 
-            viewModel.login(username, password)
-        }
+                        viewModel.saveUser(user)
 
-        mainButtonRegister.setOnClickListener {
-            navController.navigate(R.id.registerFragment)
+                        val intent = Intent (activity, MainActivity::class.java)
+                        this@LoginFragment.startActivity(intent)
+
+                        activity?.finish()
+                    } else {
+                        val error = response.errorBody()?.string()
+                        val jsonObject = JsonParser().parse(error).asJsonObject
+                        message = jsonObject.get("message").asString
+                    }
+
+                    Toast.makeText(
+                        view.context,
+                        message,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                override fun onFailure(call: Call<ApiResponseUser>, t: Throwable) {
+                    Toast.makeText(
+                        view.context,
+                        "Noget gik galt. Kontakt support!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    call.cancel()
+                }
+            })
         }
 
         return view

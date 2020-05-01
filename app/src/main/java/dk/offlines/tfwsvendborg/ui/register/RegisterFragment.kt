@@ -40,7 +40,7 @@ class RegisterFragment: Fragment() {
             if(it == null) {
                 toastMessage("Email er allerede oprettet.")
             } else {
-                toastMessage("Din bruger er blevet oprettet.\n Brugernavn: ${it.username} - Kodeord: ${it.password}")
+//                toastMessage("Din bruger er blevet oprettet.\n Brugernavn: ${it.username} - Kodeord: ${it.password}")
             }
         })
 
@@ -84,7 +84,7 @@ class RegisterFragment: Fragment() {
             }
 
             if(register) {
-                viewModel.register(username.toString(), password, firstname, lastname, address, birthdate, email, phoneNr)
+//                viewModel.register(username.toString(), password, firstname, lastname, address, birthdate, email, phoneNr)
             }
         }
 

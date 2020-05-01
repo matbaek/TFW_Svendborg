@@ -7,12 +7,13 @@ import androidx.room.Query
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM users WHERE username = :username AND password = :password")
-    fun getUser(username: String, password: String): User?
-
-    @Query("SELECT * FROM users WHERE username = :username OR email = :email")
-    fun checkUser(username: String, email: String): Boolean
-
+    // After API
     @Insert
-    suspend fun insertUser(user: User)
+    fun saveUser(user: User)
+
+    @Query("SELECT * FROM users")
+    fun getUser(): User
+
+    @Query("DELETE FROM users")
+    fun removeUser()
 }

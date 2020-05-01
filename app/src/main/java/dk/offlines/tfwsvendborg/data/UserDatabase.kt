@@ -20,7 +20,8 @@ abstract class UserDatabase: RoomDatabase() {
                         context.applicationContext,
                         UserDatabase::class.java,
                         "users.db"
-                    ).build()
+                    ).allowMainThreadQueries()
+                    .build()
                 }
             }
             return INSTANCE!!

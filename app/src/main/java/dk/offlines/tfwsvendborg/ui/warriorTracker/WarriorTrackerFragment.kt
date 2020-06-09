@@ -1,4 +1,4 @@
-package dk.offlines.tfwsvendborg.ui.warrMan
+package dk.offlines.tfwsvendborg.ui.warriorTracker
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import dk.offlines.tfwsvendborg.R
 import kotlinx.android.synthetic.main.website_fragment.*
 
-class WarrManFragment: Fragment() {
+class WarriorTrackerFragment: Fragment() {
     private lateinit var webview : WebView
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -22,7 +22,7 @@ class WarrManFragment: Fragment() {
         ): View? {
 
             val view = inflater.inflate(R.layout.website_fragment, container, false)
-        return view
+            return view
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,9 +51,6 @@ class WarrManFragment: Fragment() {
 
         }
 
-
-        val url = "http://offlines.dk/Warriors_Manual.pdf"
-        webView.loadUrl("https://docs.google.com/gview?embedded=true&url="+url)
+        webView.loadUrl("https://www.warriortracker.com/")
     }
-
 }

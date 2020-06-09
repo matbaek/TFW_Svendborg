@@ -1,24 +1,33 @@
-@file:Suppress("DEPRECATION")
-
 package dk.offlines.tfwsvendborg.ui.register
 
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import com.google.gson.JsonParser
+import dk.offlines.tfwsvendborg.MainActivity
 import dk.offlines.tfwsvendborg.R
-import kotlinx.android.synthetic.main.register_fragment.*
+import dk.offlines.tfwsvendborg.api.ApiClient
+import dk.offlines.tfwsvendborg.api.ApiInterface
+import dk.offlines.tfwsvendborg.api.ApiResponseUser
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
-class RegisterFragment: Fragment() {
-    private lateinit var navController: NavController
 
-    private lateinit var viewModel: RegisterViewModel
+@Suppress("DEPRECATION")
+class RegisterFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,81 +35,74 @@ class RegisterFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         (requireActivity() as AppCompatActivity).run {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
         setHasOptionsMenu(true)
 
-        navController = Navigation.findNavController(requireActivity(), R.id.nav_host)
+        val view = inflater.inflate(R.layout.admin_register_fragment, container, false)
+        val apiInterface = ApiClient().getClient().create(ApiInterface::class.java)
+        val register_button: Button = view.findViewById(R.id.button_register)
 
-        val view =  inflater.inflate(R.layout.register_fragment, container, false)
-        val registerButton = view.findViewById<Button>(R.id.buttonRegisterCreateNewUser)
+        register_button.setOnClickListener {
+            val username: EditText = view.findViewById(R.id.register_username)
+            val first_name: EditText = view.findViewById(R.id.register_firstname)
+            val last_name: EditText = view.findViewById(R.id.register_lastname)
+            val birthday: EditText = view.findViewById(R.id.register_birthday)
+            val address: EditText = view.findViewById(R.id.register_address)
+            val zip_code: EditText = view.findViewById(R.id.register_zip_code)
+            val city: EditText = view.findViewById(R.id.register_city)
+            val phone_number: EditText = view.findViewById(R.id.register_phone_number)
+            val email: EditText = view.findViewById(R.id.register_email)
 
-        viewModel = ViewModelProviders.of(this).get(RegisterViewModel::class.java)
-        viewModel.userData.observe(viewLifecycleOwner, Observer {
-            if(it == null) {
-                toastMessage("Email er allerede oprettet.")
-            } else {
-//                toastMessage("Din bruger er blevet oprettet.\n Brugernavn: ${it.username} - Kodeord: ${it.password}")
-            }
-        })
+            // Hide keyboard - https://stackoverflow.com/questions/3400028/close-virtual-keyboard-on-button-press
+            val imm = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
 
-        registerButton.setOnClickListener {
-            val firstname = registerFirstname.text.toString()
-            val lastname = registerLastname.text.toString()
-            val address = registerAddress.text.toString()
-            val birthdate = registerBirthdate.text.toString()
-            val email = registerEmail.text.toString()
-            val phoneNr = if(registerPhoneNumber.text.toString().isEmpty()) { 0 } else { registerPhoneNumber.text.toString().toInt() }
-            var username = StringBuilder()
-            val password = "1234"
+            val call: Call<ApiResponseUser> = apiInterface.register(
+                username.text.toString(), first_name.text.toString(), last_name.text.toString(),
+                birthday.text.toString(), address.text.toString(), Integer.parseInt(zip_code.text.toString()),
+                city.text.toString(), Integer.parseInt(phone_number.text.toString()), email.text.toString()
+            )
+            call.enqueue(object: Callback<ApiResponseUser> {
+                @Override
+                override fun onResponse(
+                    call: Call<ApiResponseUser>,
+                    response: Response<ApiResponseUser>
+                ) {
+                    var message: String?
 
-            if(firstname.length < 3) {
-                username.append(firstname.substring(firstname.indices))
-            } else {
-                username.append(firstname.substring(0..3))
-            }
-            if(lastname.length < 3) {
-                username.append(lastname.substring(lastname.indices))
-            } else {
-                username.append(lastname.substring(0..3))
-            }
+                    if(response.isSuccessful) {
+                        val apiResponseUser: ApiResponseUser? = response.body()
+                        message = apiResponseUser?.message
 
-            val arrayOfFields = arrayListOf<String>(firstname, lastname, address, birthdate, email, phoneNr.toString())
-            val arrayOfMessages = arrayListOf<String>("Fornavn", "Efternavn", "Adresse", "Fødselsdag", "Email", "Telefon nummer")
-            var count = 0
-            var register = false
+                        val intent = Intent (activity, MainActivity::class.java)
+                        this@RegisterFragment.startActivity(intent)
 
-            for (field in arrayOfFields) {
-                if(field.isEmpty() || field == "0") {
-                    toastMessage("${arrayOfMessages[count]} skal udfyldes")
-                    break
+                        activity?.finish()
+                    } else {
+                        val error = response.errorBody()?.string()
+                        val jsonObject = JsonParser().parse(error).asJsonObject
+                        message = jsonObject.get("message").asString
+                    }
+
+                    Toast.makeText(
+                        view.context,
+                        message,
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
-                if(count == 5) {
-                    register = true
+                override fun onFailure(call: Call<ApiResponseUser>, t: Throwable) {
+                    Toast.makeText(
+                        view.context,
+                        "Noget gik galt. Kontakt support!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    call.cancel()
                 }
-
-                count++
-            }
-
-            if(register) {
-//                viewModel.register(username.toString(), password, firstname, lastname, address, birthdate, email, phoneNr)
-            }
+            })
         }
 
         return view
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item?.itemId == android.R.id.home) {
-            navController.navigateUp()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    fun toastMessage(message: String) {
-        val toastError = Toast.makeText(context, message, Toast.LENGTH_LONG)
-        toastError.setGravity(Gravity.TOP, 0, 250)
-        toastError.show()
     }
 }

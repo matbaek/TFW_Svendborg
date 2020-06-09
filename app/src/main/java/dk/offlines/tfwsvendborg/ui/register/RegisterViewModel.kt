@@ -6,7 +6,7 @@ import dk.offlines.tfwsvendborg.data.UserRepository
 
 class RegisterViewModel(app: Application): AndroidViewModel(app) {
     private val dataRepository = UserRepository(app)
-    val userData = dataRepository.userData
+//    val userData = dataRepository.userData
 
 //    fun register(username: String, password: String, firstname: String, lastname: String,
 //                 address: String, birthdate: String, email: String, phoneNr: Int) {

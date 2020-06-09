@@ -8,5 +8,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="manual">Warrior Manual</string>
     <string name="logout">Log ud</string>
+    <string name="show_profiles">Vis profiler</string>
+    <string name="register_new_user">Registrer ny bruger</string>
+    <string name="warrior_tracker">Warrior Tracker</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="records">Rekorder</string>
 
 </resources>

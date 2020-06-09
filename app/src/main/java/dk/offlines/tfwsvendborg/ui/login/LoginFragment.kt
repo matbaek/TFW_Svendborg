@@ -11,7 +11,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.JsonParser
@@ -28,6 +27,7 @@ import retrofit2.Response
 
 @Suppress("DEPRECATION")
 class LoginFragment : Fragment() {
+    private lateinit var viewModel: LoginViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +38,13 @@ class LoginFragment : Fragment() {
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
         setHasOptionsMenu(true)
+
+        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+        val user: User = viewModel.getUser()
+
+        if(user != null) {
+            startIntet()
+        }
 
         val view = inflater.inflate(R.layout.login_fragment, container, false)
         val apiInterface = ApiClient().getClient().create(ApiInterface::class.java)
@@ -64,14 +71,11 @@ class LoginFragment : Fragment() {
                     if(response.isSuccessful) {
                         val apiResponseUser: ApiResponseUser? = response.body()
                         message = apiResponseUser?.message
-                        var user: User = apiResponseUser!!.user
+                        val user: User = apiResponseUser!!.user
 
                         viewModel.saveUser(user)
 
-                        val intent = Intent (activity, MainActivity::class.java)
-                        this@LoginFragment.startActivity(intent)
-
-                        activity?.finish()
+                        startIntet()
                     } else {
                         val error = response.errorBody()?.string()
                         val jsonObject = JsonParser().parse(error).asJsonObject
@@ -97,5 +101,12 @@ class LoginFragment : Fragment() {
         }
 
         return view
+    }
+
+    fun startIntet() {
+        val intent = Intent (activity, MainActivity::class.java)
+        this@LoginFragment.startActivity(intent)
+
+        activity?.finish()
     }
 }

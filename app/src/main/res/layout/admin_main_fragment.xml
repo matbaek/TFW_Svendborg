@@ -8,10 +8,13 @@
 
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_admin_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="144dp"
-        tools:layout_editor_absoluteY="112dp" />
+        android:layout_marginTop="25dp"
+        android:text="Velkommen"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

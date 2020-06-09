@@ -7,7 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class UserRepository(val app: Application) {
-    val userData = MutableLiveData<User>()
     private val userDao = UserDatabase.getDatabase(app).userDao()
 
     fun saveUser(user: User) {
@@ -20,5 +19,9 @@ class UserRepository(val app: Application) {
 
     fun removeUser() {
         userDao.removeUser()
+    }
+
+    fun updateRecords(username: String, pull_ups: Int, knee_graps: Int) {
+        userDao.updateRecords(username, pull_ups, knee_graps)
     }
 }

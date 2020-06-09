@@ -16,4 +16,7 @@ interface UserDao {
 
     @Query("DELETE FROM users")
     fun removeUser()
+
+    @Query("UPDATE users SET pull_ups = :pull_ups, knee_graps = :knee_graps WHERE username = :username")
+    fun updateRecords(username: String, pull_ups: Int, knee_graps: Int)
 }

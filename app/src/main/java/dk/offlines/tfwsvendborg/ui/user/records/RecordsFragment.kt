@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -43,65 +44,49 @@ class RecordsFragment: Fragment() {
         viewModel = ViewModelProviders.of(this).get(ViewModel::class.java)
         val user: User = viewModel.getUser()
 
-        val button_pullUps_add: TextView = view.findViewById(R.id.button_pullUps_add)
-        val button_pullUps_subtract: TextView = view.findViewById(R.id.button_pullUps_subtract)
-        val button_kneeGraps_add: TextView = view.findViewById(R.id.button_kneeGraps_add)
-        val button_kneeGraps_subtract: TextView = view.findViewById(R.id.button_kneeGraps_subtract)
-        val button_update: TextView = view.findViewById(R.id.button_updateRecords)
+        val button_pullUps_add: Button = view.findViewById(R.id.button_pullUps_add)
+        val button_pullUps_subtract: Button = view.findViewById(R.id.button_pullUps_subtract)
+        val button_kneeGraps_add: Button = view.findViewById(R.id.button_kneeGraps_add)
+        val button_kneeGraps_subtract: Button = view.findViewById(R.id.button_kneeGraps_subtract)
+        val button_update: Button = view.findViewById(R.id.button_updateRecords)
         pull_ups = view.findViewById(R.id.editView_pullUps)
         knee_graps = view.findViewById(R.id.editView_kneeGraps)
 
         set_editView(user.pull_ups, user.knee_graps)
-
-        pull_ups.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if(pull_ups.text.toString().isEmpty()) {
-                    pull_ups.error = "Kan ikke være tom!"
-                    button_update.isEnabled = false
-                } else {
-                    pull_ups.error = null
-                    button_update.isEnabled = true
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-        })
-
-        knee_graps.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if(knee_graps.text.toString().isEmpty()) {
-                    knee_graps.error = "Kan ikke være tom!"
-                    button_update.isEnabled = false
-                } else {
-                    knee_graps.error = null
-                    button_update.isEnabled = true
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-        })
+        if(user.pull_ups == 0) {
+            enable_button(button_pullUps_subtract)
+        }
+        if(user.knee_graps == 0) {
+            enable_button(button_kneeGraps_subtract)
+        }
 
         button_pullUps_add.setOnClickListener {
             user.pull_ups++
             pull_ups.text = user.pull_ups.toString()
+            if(user.pull_ups == 1) {
+                enable_button(button_pullUps_subtract)
+            }
         }
         button_pullUps_subtract.setOnClickListener {
             user.pull_ups--
             pull_ups.text = user.pull_ups.toString()
+            if(user.pull_ups == 0) {
+                enable_button(button_pullUps_subtract)
+            }
         }
         button_kneeGraps_add.setOnClickListener {
             user.knee_graps++
             knee_graps.text = user.knee_graps.toString()
+            if(user.knee_graps == 1) {
+                enable_button(button_kneeGraps_subtract)
+            }
         }
         button_kneeGraps_subtract.setOnClickListener {
             user.knee_graps--
             knee_graps.text = user.knee_graps.toString()
+            if(user.knee_graps == 0) {
+                enable_button(button_kneeGraps_subtract)
+            }
         }
 
         button_update.setOnClickListener {
@@ -149,5 +134,9 @@ class RecordsFragment: Fragment() {
     fun set_editView(pull_ups: Int, knee_graps: Int) {
         this.pull_ups.text = pull_ups.toString()
         this.knee_graps.text = knee_graps.toString()
+    }
+
+    fun enable_button(button: Button) {
+        button.isEnabled = !button.isEnabled
     }
 }
